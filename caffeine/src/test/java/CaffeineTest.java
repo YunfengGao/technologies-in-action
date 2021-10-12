@@ -17,4 +17,29 @@ public class CaffeineTest {
         TimeUnit.SECONDS.sleep(1);
         Assertions.assertNull(cache.getIfPresent("a"));
     }
+
+    @Test
+    @DisplayName("1.测试Caffeine内元素个数最大值")
+    void testCaffeineSizeLimit() throws InterruptedException {
+        Cache<String, String> cache = Caffeine.newBuilder().maximumSize(1).build();
+        cache.put("a", "b");
+        cache.put("c", "d");
+        Assertions.assertEquals(2, cache.estimatedSize());
+        Assertions.assertEquals("b", cache.getIfPresent("a"));
+        Assertions.assertEquals("d", cache.getIfPresent("c"));
+        TimeUnit.SECONDS.sleep(2);
+        Assertions.assertEquals(1, cache.estimatedSize());
+    }
+
+    @Test
+    @DisplayName("2.测试Caffeine内元素个数最大值")
+    void testCaffeineSizeLimit2() {
+        Cache<String, String> cache = Caffeine.newBuilder().maximumSize(1).build();
+        cache.put("a", "b");
+        cache.put("c", "d");
+        Assertions.assertEquals(2, cache.estimatedSize());
+        Assertions.assertEquals("d", cache.getIfPresent("c"));
+        Assertions.assertNull(cache.getIfPresent("a"));
+        Assertions.assertEquals(1, cache.estimatedSize());
+    }
 }
