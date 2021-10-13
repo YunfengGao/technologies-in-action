@@ -42,4 +42,21 @@ public class CaffeineTest {
         Assertions.assertNull(cache.getIfPresent("a"));
         Assertions.assertEquals(1, cache.estimatedSize());
     }
+
+    @Test
+    @DisplayName("2秒未写入/更新/读取，缓存过期并失效")
+    void testExpireAfterAccess() throws InterruptedException {
+        Cache<String, String> cache = Caffeine.newBuilder()
+                                              .maximumSize(1)
+                                              .expireAfterAccess(2, TimeUnit.SECONDS)
+                                              .build();
+        cache.put("a", "b");
+        TimeUnit.SECONDS.sleep(1);
+        cache.getIfPresent("a");
+        TimeUnit.SECONDS.sleep(1);
+        Assertions.assertEquals("b", cache.getIfPresent("a"));
+        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(1);
+        Assertions.assertNull(cache.getIfPresent("a"));
+    }
 }
