@@ -1,3 +1,48 @@
+$init_ssh = <<-SCRIPT
+# 允许root使用ssh登录
+sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+# 允许使用密码登录
+sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+SCRIPT
+
+$instead_yum_source = <<-SCRIPT
+sudo yum install wget -y
+cd /etc/yum.repos.d
+sudo mv CentOS-Base.repo CentOS-Base.repo.bk
+wget http://mirrors.163.com/.help/CentOS6-Base-163.repo
+# 生成缓存
+yum makecache
+SCRIPT
+
+$install_nginx = <<-'SCRIPT'
+# https://nginx.org/en/linux_packages.html#RHEL-CentOS
+sudo yum install yum-utils -y
+echo "[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/7Server/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/7Server/x86_64/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true" > /etc/yum.repos.d/nginx.repo
+
+yum list nginx
+sudo yum install nginx -y
+SCRIPT
+
+$run_nginx = <<-SCRIPT
+sudo nginx
+ps -ax | grep nginx
+SCRIPT
+
 Vagrant.configure("2") do |config|
 	config.vm.define "centos7" do |node|
 		# 设置虚拟机的Box
@@ -21,5 +66,28 @@ Vagrant.configure("2") do |config|
 			# 设置虚拟机的CPU个数
 			v.cpus = 4
 		end
+
+    # https://www.vagrantup.com/docs/provisioning/basic_usage
+    # 配置SSH登录
+	config.vm.provision "init_ssh",
+		type: "shell",
+		preserve_order: true,
+		inline: $init_ssh
+	# 更新源
+	config.vm.provision "instead_yum_source",
+		type: "shell",
+		preserve_order: true,
+		inline: $instead_yum_source
+	# 安装nginx
+    config.vm.provision "install_nginx",
+        type: "shell",
+        preserve_order: true,
+        inline: $install_nginx
+
+    # 启动nginx
+    config.vm.provision "run_nginx",
+       type: "shell",
+       preserve_order: true,
+       inline: $run_nginx
 	end
 end
