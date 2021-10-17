@@ -1,5 +1,8 @@
 # Nginx安装启动
 
+## Nginx官网
+https://nginx.org/
+
 ## 启动nginx
 ```shell script
 # https://nginx.org/en/docs/beginners_guide.html
@@ -25,6 +28,7 @@ nginx -s quit
 # 查看nginx已安装的模块
 nginx -V
 
-
+# 重新加载配置文件
+nginx -s reload
 ```
 
