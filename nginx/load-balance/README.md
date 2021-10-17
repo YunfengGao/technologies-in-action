@@ -1,6 +1,6 @@
 # 负载均衡
 
-## nginx.conf 配置
+## nginx.conf 配置()
 ```shell script
 http {
     include       /etc/nginx/mime.types;
@@ -21,10 +21,25 @@ http {
 
     include /etc/nginx/conf.d/*.conf;
     
+    # 默认负载均衡算法为轮询
     upstream balance_server {
         server 192.168.56.110:8080;
         server 192.168.56.110:8081;
     }
+
+#    按权重，10%的请求到8080，90%的请求到8081
+#    upstream balance_server {
+#        server 192.168.56.110:8080 weight=1;
+#        server 192.168.56.110:8081 weight=9;
+#    }
+
+#    按ip的hash结果
+#    upstream balance_server {
+#        ip_hash;
+#        server 192.168.56.110:8080;
+#        server 192.168.56.110:8081;
+#    }
+
     server {
         listen 80;
         server_name 192.168.56.110;
