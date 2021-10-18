@@ -11,6 +11,7 @@
     <modules>
         <module>caffeine</module>
         <module>nginx</module>
+        <module>java-benchmark</module>
     </modules>
 
     <properties>
