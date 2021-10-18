@@ -1,25 +1,27 @@
 package com.github.yunfeng.jackson;
 
+import java.util.List;
+
 public class ClassWithSetter {
-    public void setInner(final Inner inner) {
-        this.inner = inner;
+    private List<Data> data;
+
+    public List<Data> getData() {
+        return data;
     }
 
-    public Inner getInner() {
-        return inner;
+    public void setData(final List<Data> data) {
+        this.data = data;
     }
 
-    private Inner inner;
-
-    static class Inner {
-        public void setId(final String id) {
-            this.id = id;
-        }
+    static class Data {
+        private String id;
 
         public String getId() {
             return id;
         }
 
-        private String id;
+        public void setId(final String id) {
+            this.id = id;
+        }
     }
 }

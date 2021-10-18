@@ -24,17 +24,21 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @Warmup(iterations = 3)
 @Measurement(iterations = 5)
 public class Deserialization {
-    String string = "{\"inner\" : {\"id\" : \"test\"}}";
+    String string = "{\"data\" : [{\"id\":\"a\"}, {\"id\":\"b\"}, {\"id\":\"c\"}, {\"id\":\"d\"}]}";
     ObjectMapper mapper = new ObjectMapper();
 
     @Benchmark
     public void withoutSetter() throws JsonProcessingException {
-        ClassWithoutSetter withoutSetter = mapper.readValue(string, ClassWithoutSetter.class);
+        for (int i = 0; i < 2000; i++) {
+            ClassWithoutSetter withoutSetter = mapper.readValue(string, ClassWithoutSetter.class);
+        }
     }
 
     @Benchmark
     public void withSetter() throws JsonProcessingException {
-        ClassWithSetter withSetter = mapper.readValue(string, ClassWithSetter.class);
+        for (int i = 0; i < 2000; i++) {
+            ClassWithSetter withSetter = mapper.readValue(string, ClassWithSetter.class);
+        }
     }
 
     public static void main(String[] args) throws RunnerException {

@@ -1,17 +1,19 @@
 package com.github.yunfeng.jackson;
 
+import java.util.List;
+
 public class ClassWithoutSetter {
-    public ClassWithSetter.Inner getInner() {
-        return inner;
+    private List<Data> data;
+
+    public List<Data> getData() {
+        return data;
     }
 
-    private ClassWithSetter.Inner inner;
+    static class Data {
+        private String id;
 
-    static class Inner {
         public String getId() {
             return id;
         }
-
-        private String id;
     }
 }
