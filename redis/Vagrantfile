@@ -1,0 +1,104 @@
+$init_ssh = <<-SCRIPT
+# 允许root使用ssh登录
+sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+# 允许使用密码登录
+sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+SCRIPT
+
+$instead_yum_source = <<-SCRIPT
+sudo yum install wget -y
+cd /etc/yum.repos.d
+sudo mv CentOS-Base.repo CentOS-Base.repo.bk
+wget http://mirrors.163.com/.help/CentOS6-Base-163.repo
+# 生成缓存
+yum makecache
+SCRIPT
+
+$install_redis_by_source_code = <<-'SCRIPT'
+# https://stackoverflow.com/questions/30692708/redis-linux-error-when-installing-redis-on-linux-cc-command-not-found
+sudo yum groupinstall 'Development Tools' -y
+
+cd /home
+sudo wget https://download.redis.io/releases/redis-6.2.6.tar.gz
+sudo tar -zxvf redis-6.2.6.tar.gz
+cd redis-6.2.6
+sudo make
+sudo make install
+
+# 卸载
+# sudo rm -rf /usr/local/bin/redis*
+# sudo rm -rf /home/redis*
+SCRIPT
+
+$install_redis = <<-'SCRIPT'
+sudo yum install epel-release -y
+sudo yum update -y
+sudo yum install redis -y
+SCRIPT
+
+$config_redis = <<-'SCRIPT'
+# 允许redis远程连接
+sudo sed -i 's/bind 127.0.0.1/#bind 127.0.0.1/' /etc/redis.conf
+# 使用密码连接
+sudo sed -i 's/#requirepass foobared/requirepass foobared/' /etc/redis.conf
+SCRIPT
+
+$auto_run_when_centos_start = <<-SCRIPT
+sudo systemctl start redis.service
+sudo systemctl enable redis.service
+SCRIPT
+
+Vagrant.configure("2") do |config|
+	config.vm.define "redis" do |node|
+		# 设置虚拟机的Box
+		node.vm.box = "centos/7"
+
+		# 设置虚拟机的主机名
+		node.vm.hostname="centos7-redis"
+
+		# 设置虚拟机的IP，根据VirtualBox Host-Only Network配置
+		node.vm.network "private_network", ip: "192.168.56.120", netmask: "255.255.255.0"
+
+		# 设置主机与虚拟机的共享目录
+		# node.vm.synced_folder "~/Documents/vagrant/share", "/home/vagrant/share"
+
+		# VirtaulBox相关配置
+		node.vm.provider "virtualbox" do |v|
+			# 设置虚拟机的名称
+			v.name = "centos7-redis"
+			# 设置虚拟机的内存大小
+			v.memory = 4096
+			# 设置虚拟机的CPU个数
+			v.cpus = 4
+		end
+
+    # https://www.vagrantup.com/docs/provisioning/basic_usage
+    # 配置SSH登录
+	config.vm.provision "init_ssh",
+		type: "shell",
+		preserve_order: true,
+		inline: $init_ssh
+	# 更新源
+	config.vm.provision "instead_yum_source",
+		type: "shell",
+		preserve_order: true,
+		inline: $instead_yum_source
+	# 安装redis
+    config.vm.provision "install_redis",
+        type: "shell",
+        preserve_order: true,
+        inline: $install_redis
+	# 配置redis
+    config.vm.provision "config_redis",
+        type: "shell",
+        preserve_order: true,
+        inline: $config_redis
+    # 开机启动redis
+    config.vm.provision "auto_run_when_centos_start",
+        type: "shell",
+        preserve_order: true,
+        inline: $auto_run_when_centos_start
+
+    end
+end

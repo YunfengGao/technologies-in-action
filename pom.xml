@@ -12,6 +12,7 @@
         <module>caffeine</module>
         <module>nginx</module>
         <module>java-benchmark</module>
+        <module>redis</module>
     </modules>
 
     <properties>
