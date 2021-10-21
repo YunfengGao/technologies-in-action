@@ -5,3 +5,8 @@
 
 ### 相关工具
 Jedis: https://github.com/redis/jedis
+
+### 常用命令
+
+**连接redis**     
+redis-cli -h 192.168.56.120 -p 6379 -a foobared

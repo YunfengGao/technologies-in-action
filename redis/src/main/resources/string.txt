@@ -1,0 +1,39 @@
+192.168.56.120:6379> SET name nubula
+OK
+192.168.56.120:6379> GET name
+"nubula"
+192.168.56.120:6379> GETRANGE name 0 4
+"nubul"
+192.168.56.120:6379> GETSET name new_nebula
+"nubula"
+192.168.56.120:6379> GET name
+"new_nebula"
+192.168.56.120:6379> GETBIT name 0
+(integer) 0
+192.168.56.120:6379> SET age 26
+OK
+192.168.56.120:6379> MGET name age
+1) "new_nebula"
+2) "26"
+192.168.56.120:6379> SETBIT name 0 1
+(integer) 0
+192.168.56.120:6379> GET name
+"\xeeew_nebula"
+192.168.56.120:6379> SETEX xxxx 2 HAHA
+OK
+192.168.56.120:6379> GET xxxx
+(nil)
+192.168.56.120:6379> SETEX name 20 haha
+OK
+192.168.56.120:6379> GET name
+"haha"
+192.168.56.120:6379> GET name
+(nil)
+192.168.56.120:6379> SETNX name haha
+(integer) 1
+192.168.56.120:6379> GET name
+"haha"
+192.168.56.120:6379> SETNX name bye
+(integer) 0
+192.168.56.120:6379> GET name
+"haha"
