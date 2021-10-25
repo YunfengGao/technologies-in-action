@@ -13,6 +13,7 @@
         <module>nginx</module>
         <module>java-benchmark</module>
         <module>redis</module>
+        <module>mysql</module>
     </modules>
 
     <properties>

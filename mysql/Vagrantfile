@@ -1,0 +1,81 @@
+$init_ssh = <<-SCRIPT
+# 允许root使用ssh登录
+sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+# 允许使用密码登录
+sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+SCRIPT
+
+$instead_yum_source = <<-SCRIPT
+sudo yum install wget -y
+cd /etc/yum.repos.d
+sudo mv CentOS-Base.repo CentOS-Base.repo.bk
+wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+# 生成缓存
+yum makecache
+SCRIPT
+
+$install_mysql = <<-'SCRIPT'
+# https://dev.mysql.com/doc/refman/8.0/en/linux-installation-yum-repo.html
+
+# -U 升级指定的套件档
+# -v 显示指令执行过程
+# -h 套件安装时列出标记
+sudo rpm -Uvh https://repo.mysql.com//mysql80-community-release-el7-3.noarch.rpm
+sudo yum install mysql-community-server -y
+SCRIPT
+
+$run_mysql = <<-SCRIPT
+sudo systemctl enable mysqld
+sudo systemctl start mysqld
+grep 'temporary password' /var/log/mysqld.log
+SCRIPT
+
+Vagrant.configure("2") do |config|
+	config.vm.define "centos7-mysql" do |node|
+		# 设置虚拟机的Box
+		node.vm.box = "centos/7"
+
+		# 设置虚拟机的主机名
+		node.vm.hostname="centos7-mysql"
+
+		# 设置虚拟机的IP，根据VirtualBox Host-Only Network配置
+		node.vm.network "private_network", ip: "192.168.56.140", netmask: "255.255.255.0"
+
+		# 设置主机与虚拟机的共享目录
+		# node.vm.synced_folder "~/Documents/vagrant/share", "/home/vagrant/share"
+
+		# VirtaulBox相关配置
+		node.vm.provider "virtualbox" do |v|
+			# 设置虚拟机的名称
+			v.name = "centos7-mysql"
+			# 设置虚拟机的内存大小
+			v.memory = 4096
+			# 设置虚拟机的CPU个数
+			v.cpus = 4
+		end
+
+    # https://www.vagrantup.com/docs/provisioning/basic_usage
+    # 配置SSH登录
+	config.vm.provision "init_ssh",
+		type: "shell",
+		preserve_order: true,
+		inline: $init_ssh
+	# 更新源
+	config.vm.provision "instead_yum_source",
+		type: "shell",
+		preserve_order: true,
+		inline: $instead_yum_source
+	# 安装mysql
+    config.vm.provision "install_mysql",
+        type: "shell",
+        preserve_order: true,
+        inline: $install_mysql
+
+    # 启动mysql
+    config.vm.provision "run_mysql",
+       type: "shell",
+       preserve_order: true,
+       inline: $run_mysql
+	end
+end
