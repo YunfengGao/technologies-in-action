@@ -1,0 +1,87 @@
+$init_ssh = <<-SCRIPT
+# 允许root使用ssh登录
+sudo sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+# 允许使用密码登录
+sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+SCRIPT
+
+$instead_yum_source = <<-SCRIPT
+sudo yum install wget -y
+cd /etc/yum.repos.d
+sudo mv CentOS-Base.repo CentOS-Base.repo.bk
+wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
+# 生成缓存
+yum makecache
+SCRIPT
+
+$install_docker = <<-'SCRIPT'
+# https://docs.docker.com/engine/install/centos/#install-using-the-repository
+sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+sudo yum install -y yum-utils
+sudo yum-config-manager \
+    --add-repo \
+    http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+sudo yum install -y docker-ce docker-ce-cli containerd.io
+SCRIPT
+
+$run_docker = <<-SCRIPT
+sudo systemctl enable docker
+sudo systemctl start docker
+SCRIPT
+
+Vagrant.configure("2") do |config|
+	config.vm.define "centos7-docker" do |node|
+		# 设置虚拟机的Box
+		node.vm.box = "centos/7"
+
+		# 设置虚拟机的主机名
+		node.vm.hostname="centos7-docker"
+
+		# 设置虚拟机的IP，根据VirtualBox Host-Only Network配置
+		node.vm.network "private_network", ip: "192.168.56.150", netmask: "255.255.255.0"
+
+		# 设置主机与虚拟机的共享目录
+		# node.vm.synced_folder "~/Documents/vagrant/share", "/home/vagrant/share"
+
+		# VirtaulBox相关配置
+		node.vm.provider "virtualbox" do |v|
+			# 设置虚拟机的名称
+			v.name = "centos7-docker"
+			# 设置虚拟机的内存大小
+			v.memory = 4096
+			# 设置虚拟机的CPU个数
+			v.cpus = 4
+		end
+
+    # https://www.vagrantup.com/docs/provisioning/basic_usage
+    # 配置SSH登录
+	config.vm.provision "init_ssh",
+		type: "shell",
+		preserve_order: true,
+		inline: $init_ssh
+	# 更新源
+	config.vm.provision "instead_yum_source",
+		type: "shell",
+		preserve_order: true,
+		inline: $instead_yum_source
+	# 安装docker
+    config.vm.provision "install_docker",
+        type: "shell",
+        preserve_order: true,
+        inline: $install_docker
+
+    # 启动docker
+    config.vm.provision "run_docker",
+       type: "shell",
+       preserve_order: true,
+       inline: $run_docker
+	end
+end
