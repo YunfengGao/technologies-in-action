@@ -29,10 +29,19 @@ sudo yum install -y yum-utils
 sudo yum-config-manager \
     --add-repo \
     http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+sudo sed -i 's/download.docker.com/mirrors.aliyun.com\/docker-ce/g' /etc/yum.repos.d/docker-ce.repo
 sudo yum install -y docker-ce docker-ce-cli containerd.io
 SCRIPT
 
 $run_docker = <<-SCRIPT
+# 国内 镜像加速 https://yeasy.gitbook.io/docker_practice/install/mirror
+# https://askubuntu.com/questions/103643/cannot-echo-hello-x-txt-even-with-sudo
+echo '{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com",
+    "https://mirror.baidubce.com"
+  ]
+}' | sudo tee /etc/docker/daemon.json
 sudo systemctl enable docker
 sudo systemctl start docker
 SCRIPT
