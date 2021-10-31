@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk8
 EXPOSE 8080
-ADD docker-1.0-SNAPSHOT.jar japp.jar
+ADD ./target/docker-1.0-SNAPSHOT.jar japp.jar
 CMD ["java", "-jar", "japp.jar"]
 
 # docker build -t japp .
