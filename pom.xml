@@ -15,6 +15,7 @@
         <module>redis</module>
         <module>mysql</module>
         <module>docker</module>
+        <module>kafka</module>
     </modules>
 
     <properties>
