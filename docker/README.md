@@ -14,3 +14,13 @@
 3. `mvn clean package`
 4. `docker run -d -p 8080:8080 -it --rm japp:1.0-SNAPSHOT`
 5. 浏览器访问 http://localhost:8080/health
+
+
+### Windows Docker端口占用问题
+```shell script
+# https://github.com/docker/for-win/issues/3171
+netsh int ipv4 show dynamicport tcp
+net stop winnat
+netsh int ipv4 set dynamic tcp start=49152 num=16384
+net start winnat
+```
