@@ -3,13 +3,26 @@
 
 - 缓存
     - Caffeine
-
+    - Redis
+    
 - Web服务器
     - Nginx
     
 - 性能测试
     - JMH (Java Microbenchmark Harness)
     
+- 消息队列
+    - Kafka
+    
+- 数据库
+    - Mysql
+
+- 负载均衡
+    - Nginx
+            
+- 容器
+    - Docker
+            
     
 ## 宿主机环境
 - Win10 19042
