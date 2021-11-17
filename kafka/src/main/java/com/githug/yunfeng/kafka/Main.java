@@ -20,6 +20,7 @@ public class Main {
     }
 
     public static void producer() {
+        Collections.emptyList().parallelStream().
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
         props.put("acks", "all");
