@@ -17,6 +17,7 @@
         <module>docker</module>
         <module>kafka</module>
         <module>restful</module>
+        <module>activiti</module>
     </modules>
 
     <properties>
