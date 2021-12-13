@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         JobCoreConfiguration jobCoreConfiguration = JobCoreConfiguration.newBuilder("jobName", "0/3 * * * * ?", 2).build();
         SimpleJobConfiguration simpleJobConfiguration = new SimpleJobConfiguration(jobCoreConfiguration, CustomJob.class.getCanonicalName());
+        regCenter.init();
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfiguration).overwrite(true).build()).init();
     }
 }
