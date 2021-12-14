@@ -19,6 +19,7 @@
         <module>restful</module>
         <module>activiti</module>
         <module>elastic-job</module>
+        <module>zookeeper</module>
     </modules>
 
     <properties>
