@@ -12,8 +12,8 @@
     <artifactId>activiti</artifactId>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <activiti.version>6.0.0</activiti.version>
         <h2.version>2.0.202</h2.version>
         <sl4j.version>1.7.6</sl4j.version>
