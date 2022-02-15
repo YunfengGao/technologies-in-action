@@ -21,6 +21,7 @@
         <module>elastic-job</module>
         <module>zookeeper</module>
         <module>shiro</module>
+        <module>netty</module>
     </modules>
 
     <properties>
