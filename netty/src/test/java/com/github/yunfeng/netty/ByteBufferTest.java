@@ -29,7 +29,7 @@ public class ByteBufferTest {
                 while (buffer.hasRemaining()) {
                     byte b = buffer.get();
                     bytes[cnt++] = b;
-                    System.out.println("byte:" + b);
+                    System.out.println("byte:" + (char) b);
                 }
                 buffer.clear();
             }
