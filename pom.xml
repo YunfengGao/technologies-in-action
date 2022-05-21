@@ -22,6 +22,7 @@
         <module>zookeeper</module>
         <module>shiro</module>
         <module>netty</module>
+        <module>nacos</module>
     </modules>
 
     <properties>
