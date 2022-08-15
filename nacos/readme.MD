@@ -1,2 +1,2 @@
 ## 启动nacos：
-docker-compose -f .\scripts\standalone-derby\standalone-derby.yaml up
+docker-compose -f .\scripts\nacos-standalone-derby\standalone-derby.yaml up
