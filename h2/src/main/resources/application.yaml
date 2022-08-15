@@ -5,7 +5,8 @@ spring:
     password: password
     driverClassName: org.h2.Driver
   jpa:
-    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate.ddl-auto: none
   h2:
     console.enabled: true
     console.path: /h2-console
