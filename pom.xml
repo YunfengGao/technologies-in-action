@@ -23,6 +23,7 @@
         <module>shiro</module>
         <module>netty</module>
         <module>nacos</module>
+        <module>h2</module>
     </modules>
 
     <properties>
