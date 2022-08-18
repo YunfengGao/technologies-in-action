@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class StringUtils {
-    private static final String XX = System.getenv("xx");
+    private static final String XX = EnvUtils.getEnv("xx");
 
     private StringUtils() {
         throw new RuntimeException();
