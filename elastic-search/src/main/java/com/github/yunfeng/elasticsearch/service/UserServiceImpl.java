@@ -5,8 +5,10 @@ import com.github.yunfeng.elasticsearch.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
