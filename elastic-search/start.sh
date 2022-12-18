@@ -8,3 +8,6 @@ docker exec -it elasticsearch bash
 ./bin/elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v8.4.1/elasticsearch-analysis-ik-8.4.1.zip
 docker restart elasticsearch
 
+# 把证书拷贝出来
+docker cp elasticsearch:/usr/share/elasticsearch/config/certs/http_ca.crt .
+keytool -import -alias elastic -keystore cacerts -file http_ca.crt -storepass changeit
