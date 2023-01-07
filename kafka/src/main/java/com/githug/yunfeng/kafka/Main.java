@@ -1,5 +1,6 @@
 package com.githug.yunfeng.kafka;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,19 +46,20 @@ public class Main {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Collections.singletonList(TOPIC));
-        final int minBatchSize = 2;
-        List<ConsumerRecord<String, String>> buffer = new ArrayList<>();
-        while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(1000);
-            for (ConsumerRecord<String, String> record : records) {
-                buffer.add(record);
-                System.out.println(record.value());
-            }
-            if (buffer.size() >= minBatchSize) {
-                consumer.commitSync();
-                buffer.clear();
+        try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
+            consumer.subscribe(Collections.singletonList(TOPIC));
+            final int minBatchSize = 2;
+            List<ConsumerRecord<String, String>> buffer = new ArrayList<>();
+            while (true) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(10));
+                for (ConsumerRecord<String, String> record : records) {
+                    buffer.add(record);
+                    System.out.println(record.value());
+                }
+                if (buffer.size() >= minBatchSize) {
+                    consumer.commitSync();
+                    buffer.clear();
+                }
             }
         }
     }

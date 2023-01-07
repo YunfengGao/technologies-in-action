@@ -12,13 +12,13 @@ docker run -d --name zookeeper -p 2181:2181 -t zookeeper
 docker exec -it zookeeper /bin/bash
 
 # 启动kafka
-docker run -d --name kafka -p 9092:9092 -e KAFKA_BROKER_ID=0 -e KAFKA_ZOOKEEPER_CONNECT=192.168.8.111:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.8.111:9092 -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 -t wurstmeister/kafka
+docker run -d --name kafka -p 9092:9092 -e KAFKA_BROKER_ID=0 -e KAFKA_ZOOKEEPER_CONNECT=172.20.10.5:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://172.20.10.5:9092 -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 -t wurstmeister/kafka
 
 # 进入kafka
 docker exec -it kafka /bin/bash
 
 # producer:创建topic
-./kafka-console-producer.sh --broker-list localhost:9092 --topic test
+./opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 # 发送一条message
 > message1
 
