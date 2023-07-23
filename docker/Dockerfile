@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8
+FROM xldevops/jdk17-lts
 EXPOSE 8080
 ADD ./target/docker-1.0-SNAPSHOT.jar japp.jar
 CMD ["java", "-jar", "japp.jar"]
